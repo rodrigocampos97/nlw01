@@ -11,9 +11,10 @@ class PointsController {
 			.join('point_items', 'points.id', '=', 'point_items.point_fk')
 			.whereIn('point_items.item_fk', parsedItems)
 			.where('uf', String(uf))
+			.where('district', String(district))
 			.distinct()
 			.select('points.*');
-
+			
 		return response.json(points);
 	}
 

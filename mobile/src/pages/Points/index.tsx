@@ -45,12 +45,12 @@ const Points = () => {
  useEffect(() => {
    api.get('points', {
      params: {
-       city: routeParams.selectedDistrict,
+       district: routeParams.selectedDistrict,
        uf: routeParams.selectedUf,
        items: [6]
      }
    }).then(response => {
-     setPoints(response.data);
+      setPoints(response.data);
    });
  }, []);
 
