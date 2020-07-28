@@ -13,7 +13,7 @@ import logo from '../../assets/logo.svg';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
+import Dropzone from '../../components/Dropzone';
 
 interface Item {
 	id: number;
@@ -30,6 +30,8 @@ interface IBGEDistrictResponse {
 }
 
 const CreatePoint = () => {
+	const [selectedFile, setSelectedFile] = useState<File>();
+
 	const [items, setItems] = useState<Item[]>([]);
 	const [selectedItems, setSelectedItems] = useState<number[]>([]);
 
@@ -127,16 +129,19 @@ const CreatePoint = () => {
 		const [latitude, longitude] = selectedPosition;
 		const items = selectedItems;
 
-		const data = {
-			name,
-			email,
-			whatsapp,
-			uf,
-			district,
-			latitude,
-			longitude,
-			items
-		};
+		const data = new FormData();
+		data.append('name', name);
+		data.append('email', email);
+		data.append('whatsapp', whatsapp);
+		data.append('uf', uf);
+		data.append('district', district);
+		data.append('latitude', String(latitude));
+		data.append('longitude', String(longitude));
+		data.append('items', items.join(','));
+		
+		if (selectedFile) {
+			data.append('image', selectedFile);
+		}
 
 		await api.post('points', data);
 
@@ -168,6 +173,8 @@ const CreatePoint = () => {
 			<form onSubmit={handleSubmit}>
 				<h1>Cadastro do ponto de coleta</h1>
 
+				<Dropzone onFileUploaded={setSelectedFile} />
+
 				<fieldset>
 					<legend>
 						<h2>Dados</h2>
@@ -175,7 +182,7 @@ const CreatePoint = () => {
 
 					<div className="field">
 						<label htmlFor="name">Nome da entidade</label>
-						<input
+						<input 
 							type="text"
 							name="name"
 							id="name"
